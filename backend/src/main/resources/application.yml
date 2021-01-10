@@ -1,0 +1,10 @@
+server:
+  port: 8081
+
+
+# minio
+minio:
+  url: https://minio.zekaio.cn
+  accessKey: minioadmin
+  secretKey: minioadmin
+
