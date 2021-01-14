@@ -43,8 +43,6 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from 'uuid'
-import mime from 'mime-types'
 import { Message } from 'element-ui'
 import axios from 'axios'
 
@@ -69,20 +67,18 @@ export default {
     nativeUpload() {
       const files = document.querySelector('#file').files
       files.forEach(file => {
-        const objectName = `${uuidv4()}.${mime.extension(file.type)}`
-
         apis
-          .presignedPutObject(bucketName, objectName)
+          .presignedPutObject(bucketName, file.type)
           .then(res => {
             axios
-              .put(res.data.data, file, {
+              .put(res.data.data.presignedURL, file, {
                 headers: {
                   'Content-Type': file.type // 要设置content-type，否则无法预览
                 }
               })
               .then(() => {
                 Message.success({
-                  message: `文件${file.name}上传成功，文件名为${objectName}`
+                  message: `文件 ${file.name} 上传成功，文件路径为 ${res.data.data.filePath}`
                 })
               })
               .catch(err => {
@@ -100,20 +96,21 @@ export default {
     },
 
     elementUpload() {
-      const uploadFiles = this.$refs.upload.uploadFiles
-      this.fileCount = uploadFiles.length
-      this.percentages = new Array(this.fileCount)
+      const uploadFiles = this.$refs.upload.uploadFiles // 获取uploader中的已选文件
+
+      this.fileCount = uploadFiles.length // 文件数量，用于显示上传进度
+      this.percentages = new Array(this.fileCount) // 上传进度数组
       this.percentages.fill(0)
 
       uploadFiles.forEach((uploadFile, index) => {
-        const file = uploadFile.raw
-        const objectName = `${uuidv4()}.${mime.extension(file.type)}`
-
+        const file = uploadFile.raw // 原生的File对象
+        // 获取presigned URL
         apis
-          .presignedPutObject(bucketName, objectName)
+          .presignedPutObject(bucketName, file.type)
           .then(res => {
+            // res.data.data包含临时地址：presignedURL和文件路径：filePath
             axios
-              .put(res.data.data, file, {
+              .put(res.data.data.presignedURL, file, {
                 headers: {
                   'Content-Type': file.type // 要设置content-type，否则无法预览
                 },
@@ -129,7 +126,7 @@ export default {
               })
               .then(() => {
                 Message.success({
-                  message: `文件${file.name}上传成功，文件名为${objectName}`
+                  message: `文件 ${file.name} 上传成功，文件路径为 ${res.data.data.filePath}`
                 })
               })
               .catch(err => {

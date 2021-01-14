@@ -8,19 +8,19 @@ import org.springframework.stereotype.Service;
 @Service("MinioService")
 public class MinioServiceImpl implements MinioService {
 
-    @Override
-    public Result bucketExists(String bucketName) {
-        return Result.success(MinioUtil.bucketExists(bucketName));
-    }
+//    @Override
+//    public Result bucketExists(String bucketName) {
+//        return Result.success(MinioUtil.bucketExists(bucketName));
+//    }
+//
+//    @Override
+//    public Result makeBucket(String bucketName) {
+//        MinioUtil.makeBucket(bucketName);
+//        return Result.success();
+//    }
 
     @Override
-    public Result makeBucket(String bucketName) {
-        MinioUtil.makeBucket(bucketName);
-        return Result.success();
-    }
-
-    @Override
-    public Result presignedPutObject(String bucketName, String objectName) {
-        return Result.success(MinioUtil.presignedPutObject(bucketName, objectName));
+    public Result presignedPutObject(String bucketName, String subBucketName, String fileType) {
+        return Result.success(MinioUtil.presignedPutObject(bucketName, subBucketName, fileType));
     }
 }

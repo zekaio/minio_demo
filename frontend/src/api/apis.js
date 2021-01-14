@@ -2,11 +2,11 @@ import instance from './config'
 
 let apis = {}
 
-apis.presignedPutObject = (bucketName, objectName) => {
+apis.presignedPutObject = (bucketName, fileType, subBucketName) => {
   return instance({
     url: '/presigned/put',
     method: 'get',
-    params: { bucketName, objectName }
+    params: { bucketName, fileType, subBucketName }
   })
 }
 
